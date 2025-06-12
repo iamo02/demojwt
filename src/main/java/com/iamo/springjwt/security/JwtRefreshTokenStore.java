@@ -8,6 +8,7 @@ import java.time.Duration;
 @Component
 public class JwtRefreshTokenStore {
 
+    private static final String PREFIX = "refresh:";
     private final RedisTemplate<String, String> redisTemplate;
 
     public JwtRefreshTokenStore(RedisTemplate<String, String> redisTemplate) {
@@ -16,12 +17,17 @@ public class JwtRefreshTokenStore {
 
 
     public void save(String username, String refreshToken) {
-        redisTemplate.opsForValue().set(username, refreshToken, Duration.ofSeconds(6000));
+
+        Object cachedUser = redisTemplate.opsForValue().get(PREFIX+username);
+        if (cachedUser != null) {
+            remove(username);
+        }
+        redisTemplate.opsForValue().set(PREFIX+username, refreshToken, Duration.ofMinutes(10));
     }
 
     public boolean isValid(String username, String refreshToken) {
 
-        Object cachedUser = redisTemplate.opsForValue().get(username);
+        Object cachedUser = redisTemplate.opsForValue().get(PREFIX+username);
 
         if (cachedUser != null) {
             return cachedUser.equals(refreshToken);
@@ -30,7 +36,14 @@ public class JwtRefreshTokenStore {
     }
 
     public void remove(String username) {
-        redisTemplate.delete(username);
+        redisTemplate.delete(PREFIX+username);
     }
+
+    public void refreshToken(String username,String refreshToken) {
+        redisTemplate.delete(PREFIX+username);
+        save(username,refreshToken);
+
+    }
+
 }
 

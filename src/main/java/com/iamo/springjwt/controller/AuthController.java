@@ -47,7 +47,9 @@ public class AuthController {
         }
 
         String newAccessToken = jwtService.generateAccessToken(username);
-        return ResponseEntity.ok(new AuthResponse(newAccessToken, null));
+        String newRefreshToken = jwtService.generateRefreshToken(username);
+        refreshTokenStore.refreshToken(username, newRefreshToken);
+        return ResponseEntity.ok(new AuthResponse(newAccessToken, newRefreshToken));
     }
 
     @PostMapping("/logout")
