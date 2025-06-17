@@ -40,13 +40,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             if (jwtService.isAccessTokenValid(token, username)) {
 
-                // ✅ ดึงข้อมูลอื่นจาก payload เช่น role
                 String role = jwtService.extractClaim(token, claims -> claims.get("role", String.class));
 
-                List<GrantedAuthority> authorities = List.of(); // default
+                List<GrantedAuthority> authorities = List.of();
 
                 if (role != null) {
-                    authorities = List.of(() -> "ROLE_" +role ); // Spring ต้องการ "ROLE_" prefix
+                    authorities = List.of(() -> "ROLE_" +role );
                 }
 
                 var userDetails = new User(username, "", authorities);

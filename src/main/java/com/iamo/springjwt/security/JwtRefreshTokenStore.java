@@ -40,7 +40,7 @@ public class JwtRefreshTokenStore {
     }
 
     public void refreshToken(String username,String refreshToken) {
-        redisTemplate.delete(PREFIX+username);
+        remove(username);
         save(username,refreshToken);
 
     }

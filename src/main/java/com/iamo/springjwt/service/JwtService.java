@@ -17,7 +17,7 @@ public class JwtService {
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 1))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 2))
                 .claim("role", "ADMIN")
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
@@ -27,7 +27,7 @@ public class JwtService {
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000L * 60 * 2))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000L * 60 * 10))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
